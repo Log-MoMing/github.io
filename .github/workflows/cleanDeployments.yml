@@ -1,4 +1,4 @@
-name: publish site
+name: Delete deployments
 on:
     workflow_dispatch:
   
