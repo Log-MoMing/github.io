@@ -1,0 +1,91 @@
+site_name: LogDancer's Blog
+site_url: https://LogDancer.github.io/mkdocs-template/
+site_author: LogDancer
+site_description: LogDancer的 MKDocs 模板
+copyright: Copyright @ 2024 LogDancer, All rights reserved.
+
+
+repo_url: https://github.com/LogDancer/mkdocs-template
+repo_name: mkdocs-template
+# 点击按钮跳转至 GitHub 修改 Markdown 源文件
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: zh
+  favicon: images/author.png
+  logo: images/author.png
+  custom_dir: overrides
+  icon:
+    repo: fontawesome/brands/github
+  features:
+      - navigation.instant
+      - navigation.instant.progress
+      - header.autohide # 滑动文章到一定深度后标题栏隐藏
+      - navigation.tabs # 将 nav 的外层（页面显示在左侧）标题栏切换为标签栏（页面显示在顶部）
+      - navigation.tabs.sticky # 启用标签栏粘性后，标签栏会固定在顶部（推荐和上面的一起设置）
+      - navigation.tracking # 启用锚点跟踪后，地址栏中的 URL 会自动更新为内容列表中突出显示的活动锚点
+      - navigation.path # 在文章顶部添加路径导航，例如：a > b > c
+      - toc.follow # 当启用目录的锚点跟随时，侧边栏会自动滚动，以便活动锚点始终可见
+      - navigation.top # 显示返回顶部按钮
+      - search.suggest # 启用搜索建议后，搜索将显示最后一个单词最可能的补全，可以使用 → 键接受
+      # - search.highlight # 当启用搜索突出显示并且用户单击搜索结果时，Material for MkDocs 将突出显示链接后出现的所有内容
+      - navigation.footer # 页脚可以包含指向当前页面的上一页和下一页的链接
+      - content.action.edit # 编辑跳转到 github
+  palette:
+      # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: 切换到亮色模式
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到深色模式
+      primary: white
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: 切换到系统模式
+      primary: black
+    
+
+extra:
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/LogDancer
+
+nav:
+  - 主页: index.md
+  - 博客:
+    - 首页: blog/index.md
+
+plugins:
+  - search # 搜索插件
+  - rss:
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      # comments_path: "#__comments"
+      categories:
+        - categories
+        - tags
+  - blog:
+      blog_toc: true
+      # 默认情况下，该插件使帖子摘录成为可选。当帖子未定义摘录时，视图将包含整个帖子。此设置可用于使帖子摘录成为必需
+      # post_excerpt: required # 必须
+      post_excerpt: optional 
+      post_excerpt_max_authors: 2 # 设置摘录中显示的最大作者数
+      archive_date_format: MMMM yyyy
+      post_readtime: true # 使用此设置来控制插件是否应自动计算帖子的阅读时间，然后在帖子摘录以及帖子本身中呈现该时间
+  - mkdocs-jupyter
+      # execute: true
+      # 忽略 h1 标题，采用文件名作为标题
+      # ignore_h1_titles: false
+      # include_requirejs: true
