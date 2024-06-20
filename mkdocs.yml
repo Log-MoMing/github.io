@@ -32,6 +32,11 @@ theme:
       # - search.highlight # 当启用搜索突出显示并且用户单击搜索结果时，Material for MkDocs 将突出显示链接后出现的所有内容
       - navigation.footer # 页脚可以包含指向当前页面的上一页和下一页的链接
       - content.action.edit # 编辑跳转到 github
+      - content.tooltips # 启用改进的工具提示后，Material for MkDocs 会用漂亮的小工具提示替换浏览器的 title 属性渲染逻辑。
+      - content.tabs.link # 启用后，整个文档站点中的所有内容选项卡都将被链接，并在用户单击选项卡时切换到相同的标签。例如选择 C代码块后，其他代码块同步切换到 C 代码块
+      - content.code.annotate
+      - content.code.copy
+      - content.code.select
   palette:
       # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -89,3 +94,82 @@ plugins:
       # 忽略 h1 标题，采用文件名作为标题
       # ignore_h1_titles: false
       # include_requirejs: true
+
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/math/#configuration
+  # Arithmatex 扩展允许渲染块和内联块方程，并与 MathJax 1 （数学排版库）无缝集成。
+  # 除了在 mkdocs.yml 中启用扩展之外，还需要包含 MathJax 配置和 JavaScript 运行时，这可以通过 extra_javascript 来完成
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+
+  # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/formatting/#configuration
+  - pymdownx.mark # 高亮生效
+  - pymdownx.caret # 下划线、上标生效
+  - pymdownx.tilde # 删除线、下标生效
+  - pymdownx.keys # 键盘样式生效
+  - pymdownx.critic # 多行文本中生效上方样式，通过 {} 包裹，最终文本不会显示 {} 符号
+
+  # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#configuration
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+  - pymdownx.highlight:
+      # 此选项将自动向所有代码块添加一个标题，显示正在使用的语言的名称，例如 Python 为 py
+      auto_title: true
+      # 此选项将为所有代码块添加行号。
+      # 如果希望如果您希望向某些代码块添加行号，而不是所有代码块，请参考: https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#adding-line-numbers
+      linenums: true
+      # 设置此选项后，代码块的每一行都包含在 span 中，这对于行突出显示等功能正常工作至关重要
+      line_spans: __span
+
+  # 使用教程: https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#highlighting-inline-code-blocks
+  # InlineHilite 扩展添加了对内联代码块的语法突出显示的支持。它构建在Highlight 扩展之上，并从中获取配置
+  - pymdownx.inlinehilite
+
+  # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/tooltips/#configuration
+  # 此配置支持缩写，并允许构建简单的项目范围词汇表，从中心位置获取定义。
+  - abbr
+  - attr_list
+  # Snippets 扩展可用于通过将所有缩写移动到专用文件中来实现简单的术语表
+  - pymdownx.snippets
+      # auto_append:
+          # - includes/abbreviations.md
+
+  # 图标/表情查询: https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#search
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+  # 配置教程： https://squidfunk.github.io/mkdocs-material/reference/content-tabs/#configuration
+  # SuperFences 扩展允许代码和内容块任意嵌套，包括警告、选项卡、列表和所有其他元素。
+  - pymdownx.superfences
+  # Tabbed扩展允许使用内容选项卡，这是一种将相关内容和代码块分组到可访问选项卡下的简单方法。
+  - pymdownx.tabbed:
+      alternate_style: true
+      # 为代码块分组的标题重命名（锚点），后续可以直接通过它访问指定内容
+      # 空格会被替换为 “-”
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+
+  # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/lists/#configuration
+  # 此配置允许使用定义列表和任务列表，它们都不属于标准 Markdown 语法的一部分。
+  - def_list # 定义列表，使用方法：https://squidfunk.github.io/mkdocs-material/reference/lists/#using-definition-lists
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+  # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/grids/#configuration
+  # 这种配置允许使用网格，允许将相同或不同类型的块形成矩形形状。
+  - md_in_html
+
+  - footnotes # 脚注
+
+extra_javascript:
+  - js/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
