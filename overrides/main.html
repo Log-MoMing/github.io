@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{{ super() }}
+<style>
+    .jupyter-wrapper .jp-Notebook {
+        width: 100%;
+    }
+
+    .jp-OutputArea-output {
+        position: relative;
+        /* 使子元素能够定位 */
+    }
+
+    .jp-OutputArea-output pre {
+        position: relative;
+        /* 使子元素能够定位 */
+        cursor: pointer;
+        max-height: 300px;
+        /* 设置一个合适的最大高度 */
+        overflow-y: auto;
+        /* 当内容超出时，添加垂直滚动条 */
+        overflow-x: auto;
+        border: 1px solid #ccc;
+        /* 添加边框使其更明显 */
+        padding: 10px;
+        /* 添加内边距使内容更美观 */
+    }
+
+    .jp-InputArea-prompt {
+        margin-left: -1.1625rem;
+    }
+
+    .button-container {
+        position: absolute;
+        top: 5px;
+        right: 20px;
+        z-index: 10;
+        /* 确保按钮浮动在内容上方 */
+    }
+
+    .button-container button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    .button-container button:hover {
+        color: #007bff;
+    }
+</style>
+{% endblock content %}
+
+{% block scripts %}
+<!-- Add scripts that need to run before here -->
+{{ super() }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 处理 .jp-InputArea-prompt 元素
+        const jpInputPrompt = document.querySelectorAll('.jp-InputArea-prompt');
+        jpInputPrompt.forEach(function (element) {
+            element.textContent = element.textContent.replace(/\s+/g, '');
+        });
+
+        const jpOutputArea = document.querySelectorAll('.jp-OutputArea-output');
+        jpOutputArea.forEach(function (container) {
+            const preElement = container.querySelector('pre');
+            // 设置 pre 的样式，距离顶部 20 px
+            preElement.style.marginTop = '20px';
+            // 双击隐藏
+            preElement.title = "双击隐藏";
+
+            // 创建按钮容器
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'button-container';
+
+            // 创建复制按钮
+            const copyButton = document.createElement('button');
+            copyButton.innerHTML = `
+        <div>
+          <span class="notice" hidden>Copied!</span>
+          <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="15" version="1.1" viewBox="0 0 16 16" width="15">
+            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+            <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+          </svg>
+        </div>
+      `;
+            copyButton.title = '复制';
+
+            // 复制按钮点击事件
+            copyButton.addEventListener('click', function () {
+                navigator.clipboard.writeText(preElement.textContent).then(function () {
+                    // 清掉 span 中的 hidden 属性，并与 2 秒钟后自动添加
+                    spanElem = copyButton.querySelector('span');
+                    spanElem.removeAttribute('hidden');
+                    setTimeout(() => {
+                        spanElem.setAttribute('hidden', '');
+                    }, 2000);
+                }, function (err) {
+                    alert('复制失败: ', err);
+                });
+            });
+
+            // 创建折叠按钮
+            const collapseButton = document.createElement('button');
+            // 折叠图标
+            collapseSvg = `
+                <svg t="1718933022081" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4264" width="16" height="16"><path d="M942.1 41H657.9c-20.4 0-39.5 13.8-42.9 34-4.3 25.6 15.5 48 40.4 48h225.3c11.3 0 20.5 9.2 20.5 20.5v222.8c0 20.4 13.8 39.5 34 42.9 25.6 4.3 48-15.5 48-40.4V81.9C983 59.4 964.6 41 942.1 41zM368.6 901.1H143.4c-11.3 0-20.5-9.2-20.5-20.5V657.9c0-20.4-13.8-39.5-34-42.9-25.6-4.3-48 15.5-48 40.4v286.7c0 22.5 18.4 41 41 41h284.2c20.4 0 39.5-13.8 42.9-34 4.3-25.6-15.5-48-40.4-48zM424.5 404c0-0.2-0.1-0.5-0.1-0.7v-204c0-22.5-18.4-41-41-41-22.5 0-41 18.4-41 41v105.8L151.8 114.3c-15.9-15.9-42-15.9-57.9 0-15.9 15.9-15.9 42 0 57.9L284.6 363H178.8c-22.5 0-41 18.4-41 41 0 22.5 18.4 41 41 41h204c0.2 0 0.5 0.1 0.7 0.1 8 0 15.5-2.4 21.8-6.5 0.2-0.2 0.5-0.3 0.8-0.4 2.3-1.5 4.4-3.2 6.3-5.2 1.9-1.9 3.7-4.1 5.2-6.3 0.2-0.2 0.3-0.5 0.4-0.7 4.1-6.5 6.5-14 6.5-22zM739.4 681.5h105.8c22.5 0 41-18.4 41-41 0-22.5-18.4-41-41-41h-204c-0.2 0-0.5-0.1-0.7-0.1-8.1 0-15.5 2.4-21.9 6.5-0.2 0.1-0.5 0.2-0.7 0.4-2.3 1.5-4.4 3.2-6.3 5.2-1.9 1.9-3.7 4.1-5.2 6.3-0.1 0.2-0.2 0.5-0.4 0.7-4.1 6.4-6.5 13.8-6.5 21.9 0 0.2 0.1 0.5 0.1 0.7v204c0 22.5 18.4 41 41 41 22.5 0 41-18.4 41-41V739.4l190.7 190.7c15.9 15.9 42 15.9 57.9 0s15.9-42 0-57.9L739.4 681.5z" p-id="4265"></path></svg>
+            `;
+            // 展开图标
+            expandSvg = `
+                <svg t="1718933206201" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5302" width="16" height="16"><path d="M896 426.666667V170.666667a42.666667 42.666667 0 0 0-42.666667-42.666667H597.333333v85.333333h213.333334v213.333334h85.333333z" fill="#000000" p-id="5303"></path><path d="M597.333333 486.997333L881.365333 202.986667l-60.352-60.352L537.002667 426.666667 597.333333 486.997333zM128 597.333333v256a42.666667 42.666667 0 0 0 42.666667 42.666667h256v-85.333333H213.333333V597.333333H128z" fill="#000000" p-id="5304"></path><path d="M426.666667 537.002667L142.634667 821.013333l60.352 60.352L486.997333 597.333333 426.666667 537.002667z" fill="#000000" p-id="5305"></path></svg>
+            `;
+
+            collapseButton.innerHTML = collapseSvg;
+            collapseButton.title = '折叠';
+            // 设置折叠按钮的样式，距离顶部 -5 px
+            collapseButton.style.marginTop = '-5px';
+            collapseButton.style.fontSize = '25px';
+
+            const originalContent = preElement.innerHTML;
+            const placeholder = document.createElement('span');
+            placeholder.innerHTML = "<span style='color: gray; font-style: italic; cursor: pointer;'>输出已折叠,单击显示...<br/><br/></span>";
+
+            // 折叠按钮点击事件
+            collapseButton.addEventListener('click', function () {
+                if (preElement.dataset.hidden !== "true") {
+                    preElement.dataset.originalContent = preElement.innerHTML;
+                    preElement.innerHTML = "";
+                    preElement.appendChild(placeholder);
+                    preElement.dataset.hidden = "true";
+                    preElement.setAttribute('title', '');
+                    collapseButton.innerHTML = expandSvg; // 切换为展开图标
+                    collapseButton.title = '展开';
+                } else {
+                    preElement.innerHTML = preElement.dataset.originalContent;
+                    preElement.dataset.hidden = "false";
+                    collapseButton.innerHTML = collapseSvg; // 切换为折叠图标
+                    collapseButton.title = '折叠';
+                }
+            });
+
+            // 添加单击事件
+            placeholder.addEventListener('click', function () {
+                if (preElement.dataset.hidden === "true") {
+                    preElement.innerHTML = preElement.dataset.originalContent;
+                    preElement.dataset.hidden = "false";
+                    collapseButton.innerHTML = collapseSvg; // 切换为折叠图标
+                    collapseButton.title = '折叠';
+                }
+            });
+
+            // 添加双击隐藏
+            preElement.addEventListener('dblclick', function () {
+                if (preElement.dataset.hidden !== "true") {
+                    preElement.dataset.originalContent = preElement.innerHTML;
+                    preElement.innerHTML = "";
+                    preElement.appendChild(placeholder);
+                    preElement.dataset.hidden = "true";
+                    preElement.setAttribute('title', '');
+                    collapseButton.innerHTML = expandSvg; // 切换为展开图标
+                    collapseButton.title = '展开';
+                } else {
+                    preElement.innerHTML = preElement.dataset.originalContent;
+                    preElement.dataset.hidden = "false";
+                    collapseButton.innerHTML = collapseSvg; // 切换为折叠图标
+                    collapseButton.title = '折叠';
+                }
+            });
+
+            // Initial state
+            preElement.dataset.hidden = "false";
+
+            // 将按钮添加到按钮容器中
+            buttonContainer.appendChild(copyButton);
+            buttonContainer.appendChild(collapseButton);
+
+            // 将按钮容器添加到 pre 的父容器中
+            container.appendChild(buttonContainer);
+        });
+        // 删除所有 .jp-Collapser 元素
+        const jpCollapsers = document.querySelectorAll('.jp-Collapser');
+        jpCollapsers.forEach(function (element) {
+            element.remove();
+        });
+    });
+
+</script>
+
+<!-- Add scripts that need to run afterwards here -->
+{% endblock %}

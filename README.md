@@ -1,25 +1,30 @@
-# MkDocs模板
+# MkDocs 模板
 
-这是一个MkDocs模板，可以快速搭建并部署个人博客网页到GitHub Pages。
+这是一个 MkDocs 模板，可以快速搭建并部署个人博客网页到 GitHub Pages。
 
 - Material 主题 （安装了 [Material for MkDocs](https://github.com/squidfunk/mkdocs-material)）
-- 支持Jupyter笔记 （安装了 [mkdocs-jupyter](https://github.com/danielfrg/mkdocs-jupyter)）
+- 支持 Jupyter 笔记 （安装了 [mkdocs-jupyter](https://github.com/danielfrg/mkdocs-jupyter)）
 - 评论系统（根据 Material 教程搭建）
 - 博客（根据 Material 教程搭建）
 - 亮色/深色/跟随系统 模式切换（根据 Material 教程搭建）
 - 个人认为比较好看的样式添加及调整（根据 Material 教程搭建）
+- 使 `Jupyter` 中的输出部分支持折叠、复制、滚动
 
+  - 折叠可以双击文字，或者单击右上角的折叠按钮
+  - 展开可以单击提示文字，或者单击右上角的折叠按钮
+  - 复制可以单击右上角的复制按钮
+
+  ![jupyter_custom_button](./docs//images/jupyter_custom_button.png)
 
 ## 评论系统
 
-> 官方教程:  [添加评论系统](https://squidfunk.github.io/mkdocs-material/setup/adding-a-comment-system/)
+> 官方教程: [添加评论系统](https://squidfunk.github.io/mkdocs-material/setup/adding-a-comment-system/)
 
 [comments.html 跳转](overrides/partials/comments.html)
 
 如果不需要为博客中的帖子添加评论系统，可以直接删除`overrides/partials/comments.html`文件。
 
 如果需要为博客中的帖子添加评论系统，请将从 `giscus` 中复制的包含配置信息的 script 标签 粘贴到 `overrides/partials/comments.html` 中的提示位置
-
 
 ## 博客
 
@@ -34,4 +39,5 @@
 [跳转至 `docs/blog/.authors.yml` ](docs/blog/.authors.yml)
 
 ### 2. 模板帖
+
 [跳转至 `docs/blog/posts/hello_world.md` ](docs/blog/posts/hello_world.md#博客示例贴你好-世界)

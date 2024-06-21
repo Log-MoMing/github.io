@@ -37,6 +37,8 @@ theme:
       - content.code.annotate
       - content.code.copy
       - content.code.select
+      # - navigation.indexes # 启用后，则第一个索引页将会删除，并引用到父盒子中
+
   palette:
       # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -114,6 +116,7 @@ markdown_extensions:
   - pymdownx.critic # 多行文本中生效上方样式，通过 {} 包裹，最终文本不会显示 {} 符号
 
   # 配置教程: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#configuration
+  # 一些支持的样式: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
   - admonition
   - pymdownx.details
   - pymdownx.superfences
@@ -136,17 +139,17 @@ markdown_extensions:
   - abbr
   - attr_list
   # Snippets 扩展可用于通过将所有缩写移动到专用文件中来实现简单的术语表
-  - pymdownx.snippets
-      # auto_append:
-          # - includes/abbreviations.md
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
 
   # 图标/表情查询: https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#search
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
+        # 配置教程： https://squidfunk.github.io/mkdocs-material/reference/content-tabs/#configuration
+        # SuperFences 扩展允许代码和内容块任意嵌套，包括警告、选项卡、列表和所有其他元素。
 
-  # 配置教程： https://squidfunk.github.io/mkdocs-material/reference/content-tabs/#configuration
-  # SuperFences 扩展允许代码和内容块任意嵌套，包括警告、选项卡、列表和所有其他元素。
   - pymdownx.superfences
   # Tabbed扩展允许使用内容选项卡，这是一种将相关内容和代码块分组到可访问选项卡下的简单方法。
   - pymdownx.tabbed:
@@ -167,9 +170,13 @@ markdown_extensions:
   # 这种配置允许使用网格，允许将相同或不同类型的块形成矩形形状。
   - md_in_html
 
-  - footnotes # 脚注
+  - footnotes # 脚注: https://squidfunk.github.io/mkdocs-material/reference/footnotes/
+
 
 extra_javascript:
   - js/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+watch:
+  - overrides
