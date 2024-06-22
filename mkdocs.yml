@@ -75,6 +75,21 @@ nav:
 
 plugins:
   - search # 搜索插件
+  # 下方两个插件虽然比较方便，但是 gen-files 与 mkdocs-jupyter 不兼容
+  # 会导致 Converting 无法工作，从而抛出 json.decoder.JSONDecodeError 异常（100% 复现）
+  # 最终还是选择使用 hooks + literate-nav 的方式来嵌入配置后，再将 tab 进行自然排序
+  # - gen-files:
+  #     scripts:
+  #       - scripts/gen_nav.py
+  # 使用教程: https://oprypin.github.io/mkdocs-literate-nav/index.html
+  - literate-nav:
+      nav_file: SUMMARY.md
+  # 由于在接触 mkdocs 之前，我已经用 Jupyter 写了较多的笔记，为了减少迁移成本，启用此插件是必要的
+  - mkdocs-jupyter:
+      # execute: true
+      # 忽略 h1 标题，采用文件名作为标题
+      # ignore_h1_titles: false
+      include_requirejs: true
   - rss:
       match_path: blog/posts/.*
       date_from_meta:
@@ -87,15 +102,10 @@ plugins:
       blog_toc: true
       # 默认情况下，该插件使帖子摘录成为可选。当帖子未定义摘录时，视图将包含整个帖子。此设置可用于使帖子摘录成为必需
       # post_excerpt: required # 必须
-      post_excerpt: optional 
+      post_excerpt: optional
       post_excerpt_max_authors: 2 # 设置摘录中显示的最大作者数
       archive_date_format: MMMM yyyy
       post_readtime: true # 使用此设置来控制插件是否应自动计算帖子的阅读时间，然后在帖子摘录以及帖子本身中呈现该时间
-  - mkdocs-jupyter
-      # execute: true
-      # 忽略 h1 标题，采用文件名作为标题
-      # ignore_h1_titles: false
-      # include_requirejs: true
 
 
 markdown_extensions:
@@ -180,3 +190,7 @@ extra_javascript:
 
 watch:
   - overrides
+  - scripts
+
+hooks:
+  - scripts/mkdocs_hooks.py
