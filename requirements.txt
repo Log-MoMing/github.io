@@ -2,3 +2,4 @@ mkdocs-material
 mkdocs-jupyter
 mkdocs-rss-plugin
 mkdocs-literate-nav
+natsort
